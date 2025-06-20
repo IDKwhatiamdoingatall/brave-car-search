@@ -1,4 +1,3 @@
-// server.js
 const express = require("express");
 const axios = require("axios");
 const cors = require("cors");
@@ -6,7 +5,7 @@ const cors = require("cors");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// ✅ Allow all Vercel frontend URLs (including preview)
+// ✅ Dynamic CORS for Vercel URLs
 app.use(cors({
   origin: (origin, callback) => {
     if (!origin || origin.endsWith(".vercel.app")) {
@@ -36,16 +35,13 @@ app.post("/search", async (req, res) => {
         Accept: "application/json",
         "X-Subscription-Token": BRAVE_API_KEY,
       },
-      params: {
-        q: query,
-        count: 10
-      }
+      params: { q: query, count: 10 }
     });
 
-    const results = (response.data.web?.results || []).map((item) => ({
+    const results = (response.data.web?.results || []).map(item => ({
       title: item.title,
       link: item.url,
-      snippet: item.description,
+      snippet: item.description
     }));
 
     res.json({ results });
