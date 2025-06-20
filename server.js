@@ -1,9 +1,12 @@
 // server.js
 const express = require("express");
 const axios = require("axios");
+const cors = require("cors"); // ✅ Import cors
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+app.use(cors({ origin: "https://car-search-frontend.vercel.app" })); // ✅ Allow frontend origin
 app.use(express.json());
 
 const BRAVE_API_KEY = process.env.BRAVE_API_KEY;
