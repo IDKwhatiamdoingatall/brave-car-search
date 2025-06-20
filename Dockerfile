@@ -1,16 +1,17 @@
-# Use Node.js 18 base image
+# Use Node.js 18 as base image
 FROM node:18
 
 # Set working directory
 WORKDIR /app
 
-# Copy everything
-COPY . .
-
-# Install dependencies
+# Copy package files and install dependencies
+COPY package*.json ./
 RUN npm install
 
-# Expose port
+# Copy the rest of your app
+COPY . .
+
+# Expose the port your app runs on
 EXPOSE 3000
 
 # Start the server
