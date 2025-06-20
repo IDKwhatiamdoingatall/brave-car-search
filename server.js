@@ -1,37 +1,16 @@
+// server.js
 const express = require("express");
+const cors = require("cors");
 const axios = require("axios");
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+app.use(cors());
 app.use(express.json());
 
 const BRAVE_API_KEY = "BSArNsCN6HGdqeu2FLKUQUwSYtBzi-G";
 const BRAVE_SEARCH_URL = "https://api.search.brave.com/res/v1/web/search";
-
-const ALLOWED_DOMAINS = [
-  "dupontregistry.com", "exoticcartrader.com", "bringatrailer.com", "earthmotorcars.com", "goluxuryauto.com",
-  "tacticalfleet.com", "vegasautogallery.com", "luxuryautocollection.com", "westcoastexoticcars.com",
-  "cargurus.com", "autotrader.com", "cars.com", "carvana.com", "ebay.com", "facebook.com/marketplace",
-  "copart.com", "iaai.com", "manheim.com", "barrett-jackson.com", "mecum.com", "rmsothebys.com",
-  "goodingco.com", "bonhams.com", "thedrive.com", "auto-tempest.com", "autolist.com", "carfax.com",
-  "autocheck.com", "rodo.com", "hagerty.com", "carsandbids.com", "classiccars.com",
-  "jalopnik.com/marketplace", "autobytel.com", "hemmings.com", "forsuperrich.com", "supercars.net",
-  "luxurycarclassifieds.com", "autoblog.com/classifieds", "sportscarmarket.com", "classiccarauction.us",
-  "collectorcars.com", "specialtysales.com", "legendarymotorcar.com", "europeanautotrader.com",
-  "ultimatecarpage.com/classifieds", "vclassics.com", "pistonheads.com", "luxurysportscars.com",
-  "dubizzle.com", "driven.net", "modernclassics.com", "pristineauction.com", "rmauctions.com",
-  "chiefautomotive.com", "automobilegallery.com", "exotics-on-hand.com", "exoticarsales.com",
-  "marlinclassic.com", "copartautoauction.com", "highline-autosport.com", "automotiveconnection.com",
-  "eleganceimports.com", "gothamluxuryautos.com", "russellmotorsport.com", "penskeautomotive.com",
-  "luxurylineautos.com", "lamborghinidallas.com", "ferraridallas.com", "bmwexotics.com",
-  "audiusa.com", "mercedes-benzusa.com", "porsche.com", "lucidautomotive.com", "knightlymotorsports.com",
-  "lexusofsandiego.com", "acuraknoxville.com", "napletonexotics.com", "parkplace.com",
-  "dealerrater.com", "tradeclassics.com", "proxibid.com", "adesa.com", "autovendorspecialties.com",
-  "classicautocarsonline.com", "classiccars.org", "historicalcar.com", "motorcarauctions.com",
-  "raucca.com", "visionaryautos.com", "avantluxautocredit.com", "avantgardeimportsofdallas.com",
-  "20thcentury-classics.com", "roadschowroom.com", "transsens.com", "used-luxury-cars.com",
-  "vocars.com"
-];
 
 app.post("/search", async (req, res) => {
   const { query } = req.body;
@@ -46,12 +25,10 @@ app.post("/search", async (req, res) => {
         Accept: "application/json",
         "X-Subscription-Token": BRAVE_API_KEY,
       },
-      params: { q: query, count: 20 },
+      params: { q: query, count: 10 },
     });
 
-    const results = (response.data.web?.results || []).filter((item) => {
-      return ALLOWED_DOMAINS.some((domain) => item.url.includes(domain));
-    }).map((item) => ({
+    const results = (response.data.web?.results || []).map((item) => ({
       title: item.title,
       link: item.url,
       snippet: item.description,
@@ -64,6 +41,6 @@ app.post("/search", async (req, res) => {
   }
 });
 
-app.listen(PORT, "0.0.0.0", () => {
+app.listen(PORT, () => {
   console.log(`Server listening on http://0.0.0.0:${PORT}`);
 });
