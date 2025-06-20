@@ -6,16 +6,21 @@ const cors = require("cors");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// ✅ CORS for your real frontend
+// ✅ Allow all Vercel frontend URLs (including preview)
 app.use(cors({
-  origin: "https://car-search-frontend.vercel.app",
+  origin: (origin, callback) => {
+    if (!origin || origin.endsWith(".vercel.app")) {
+      return callback(null, true);
+    }
+    callback(new Error("Not allowed by CORS"));
+  },
   methods: ["GET", "POST", "OPTIONS"],
   allowedHeaders: ["Content-Type"]
 }));
 
 app.use(express.json());
 
-const BRAVE_API_KEY = process.env.BRAVE_API_KEY; // Your actual API key is stored as a Fly secret
+const BRAVE_API_KEY = process.env.BRAVE_API_KEY;
 const BRAVE_SEARCH_URL = "https://api.search.brave.com/res/v1/web/search";
 
 app.post("/search", async (req, res) => {
