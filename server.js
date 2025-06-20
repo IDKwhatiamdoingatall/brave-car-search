@@ -1,12 +1,12 @@
 // server.js
 const express = require("express");
-const axios = require("axios");
 const cors = require("cors");
+const axios = require("axios");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(cors({ origin: "*" }));
+app.use(cors());
 app.use(express.json());
 
 const BRAVE_API_KEY = "BSArNsCN6HGdqeu2FLKUQUwSYtBzi-G";
@@ -41,6 +41,6 @@ app.post("/search", async (req, res) => {
   }
 });
 
-app.listen(PORT, "0.0.0.0", () => {
+app.listen(PORT, () => {
   console.log(`Server listening on http://0.0.0.0:${PORT}`);
 });
