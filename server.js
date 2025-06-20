@@ -6,7 +6,7 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 
-const BRAVE_API_KEY = "BSArNsCN6HGdqeu2FLKUQUwSYtBzi-G";
+const BRAVE_API_KEY = process.env.BRAVE_API_KEY;
 const BRAVE_SEARCH_URL = "https://api.search.brave.com/res/v1/web/search";
 
 app.post("/search", async (req, res) => {
