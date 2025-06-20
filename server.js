@@ -1,11 +1,12 @@
+// server.js
 const express = require("express");
 const axios = require("axios");
-const cors = require("cors"); // <-- make sure this is here
+const cors = require("cors");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// ✅ This must come before routes
+// ✅ CORS for your real frontend
 app.use(cors({
   origin: "https://car-search-frontend.vercel.app",
   methods: ["GET", "POST", "OPTIONS"],
@@ -14,13 +15,15 @@ app.use(cors({
 
 app.use(express.json());
 
-// 🔐 BRAVE API stuff
-const BRAVE_API_KEY = process.env.BRAVE_API_KEY;
+const BRAVE_API_KEY = process.env.BRAVE_API_KEY; // Your actual API key is stored as a Fly secret
 const BRAVE_SEARCH_URL = "https://api.search.brave.com/res/v1/web/search";
 
 app.post("/search", async (req, res) => {
   const { query } = req.body;
-  if (!query) return res.status(400).json({ error: "Missing search query" });
+
+  if (!query) {
+    return res.status(400).json({ error: "Missing search query" });
+  }
 
   try {
     const response = await axios.get(BRAVE_SEARCH_URL, {
@@ -28,7 +31,10 @@ app.post("/search", async (req, res) => {
         Accept: "application/json",
         "X-Subscription-Token": BRAVE_API_KEY,
       },
-      params: { q: query, count: 10 },
+      params: {
+        q: query,
+        count: 10
+      }
     });
 
     const results = (response.data.web?.results || []).map((item) => ({
@@ -45,5 +51,5 @@ app.post("/search", async (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`Server is running at http://localhost:${PORT}`);
 });
