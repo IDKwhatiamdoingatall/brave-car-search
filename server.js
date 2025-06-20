@@ -1,3 +1,4 @@
+// server.js
 const express = require("express");
 const axios = require("axios");
 const cors = require("cors");
@@ -5,21 +6,11 @@ const cors = require("cors");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// ✅ Dynamic CORS for Vercel URLs
-app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin || origin.endsWith(".vercel.app")) {
-      return callback(null, true);
-    }
-    callback(new Error("Not allowed by CORS"));
-  },
-  methods: ["GET", "POST", "OPTIONS"],
-  allowedHeaders: ["Content-Type"]
-}));
-
+// Enable CORS for all origins (you can restrict this to just your frontend domain if you prefer)
+app.use(cors());
 app.use(express.json());
 
-const BRAVE_API_KEY = process.env.BRAVE_API_KEY;
+const BRAVE_API_KEY = "BSArNsCN6HGdqeu2FLKUQUwSYtBzi-G"; // Replace with your actual Brave API key
 const BRAVE_SEARCH_URL = "https://api.search.brave.com/res/v1/web/search";
 
 app.post("/search", async (req, res) => {
@@ -35,13 +26,13 @@ app.post("/search", async (req, res) => {
         Accept: "application/json",
         "X-Subscription-Token": BRAVE_API_KEY,
       },
-      params: { q: query, count: 10 }
+      params: { q: query, count: 10 },
     });
 
-    const results = (response.data.web?.results || []).map(item => ({
+    const results = (response.data.web?.results || []).map((item) => ({
       title: item.title,
       link: item.url,
-      snippet: item.description
+      snippet: item.description,
     }));
 
     res.json({ results });
@@ -51,6 +42,8 @@ app.post("/search", async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`Server is running at http://localhost:${PORT}`);
+// Listen on 0.0.0.0 to work on Fly.io
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Server listening on http://0.0.0.0:${PORT}`);
 });
+
