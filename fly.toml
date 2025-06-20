@@ -1,5 +1,8 @@
 app = "brave-car-search"
 
+[build]
+  dockerfile = "Dockerfile"
+
 [env]
   PORT = "3000"
 
