@@ -6,11 +6,10 @@ const cors = require("cors");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Enable CORS for all origins (you can restrict this to just your frontend domain if you prefer)
-app.use(cors());
+app.use(cors({ origin: "*" }));
 app.use(express.json());
 
-const BRAVE_API_KEY = "BSArNsCN6HGdqeu2FLKUQUwSYtBzi-G"; // Replace with your actual Brave API key
+const BRAVE_API_KEY = "BSArNsCN6HGdqeu2FLKUQUwSYtBzi-G";
 const BRAVE_SEARCH_URL = "https://api.search.brave.com/res/v1/web/search";
 
 app.post("/search", async (req, res) => {
@@ -42,8 +41,6 @@ app.post("/search", async (req, res) => {
   }
 });
 
-// Listen on 0.0.0.0 to work on Fly.io
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server listening on http://0.0.0.0:${PORT}`);
 });
-
