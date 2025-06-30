@@ -48,6 +48,8 @@ app.use(express.json());
 
 app.post("/search", async (req, res) => {
   const { query } = req.body;
+  console.log("Received search query:", query);  // Log the incoming query
+
   if (!query || query.trim() === '') {
     return res.status(400).json({ error: "Missing search query" });
   }
@@ -60,6 +62,8 @@ app.post("/search", async (req, res) => {
       },
       params: { q: query, count: 30 }
     });
+
+    console.log("Brave API raw response:", JSON.stringify(response.data, null, 2));  // Log the raw Brave API response
 
     const results = (response.data.web?.results || []).filter(item => {
       try {
