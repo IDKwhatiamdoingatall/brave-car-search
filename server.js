@@ -7,11 +7,6 @@ const PORT = process.env.PORT || 3000;
 const BRAVE_API_KEY = process.env.BRAVE_API_KEY;
 const BRAVE_SEARCH_URL = "https://api.search.brave.com/res/v1/web/search";
 
-const allowedOrigins = [
-  "https://car-search-frontend.vercel.app",
-  "https://car-search-frontend-jil1lhso6-evans-projects-437f11de.vercel.app"
-];
-
 const allowedDomains = [
   "dupontregistry.com", "exoticcartrader.com", "bringatrailer.com", "earthmotorcars.com",
   "goluxuryauto.com", "tacticalfleet.com", "vegasautogallery.com", "luxuryautocollection.com",
@@ -38,9 +33,10 @@ const allowedDomains = [
   "transsens.com", "used-luxury-cars.com", "vocars.com"
 ];
 
+// Allow all Vercel preview URLs and production
 app.use(cors({
   origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
+    if (!origin || origin.endsWith('.vercel.app')) {
       callback(null, true);
     } else {
       callback(new Error("CORS policy: Not allowed"));
@@ -52,7 +48,9 @@ app.use(express.json());
 
 app.post("/search", async (req, res) => {
   const { query } = req.body;
-  if (!query) return res.status(400).json({ error: "Missing search query" });
+  if (!query || query.trim() === '') {
+    return res.status(400).json({ error: "Missing search query" });
+  }
 
   try {
     const response = await axios.get(BRAVE_SEARCH_URL, {
