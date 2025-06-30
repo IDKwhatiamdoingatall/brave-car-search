@@ -21,12 +21,14 @@ app.use(cors({
 app.use(express.json());
 
 app.post("/search", async (req, res) => {
-  const { query } = req.body;
-  console.log("Received search query:", query);
+  const { query, page } = req.body;
+  console.log(`Received search query: ${query} | Page: ${page}`);
 
   if (!query || query.trim() === '') {
     return res.status(400).json({ error: "Missing search query" });
   }
+
+  const startIndex = (page - 1) * 10 + 1; // Calculate the start index for pagination
 
   try {
     const response = await axios.get("https://www.googleapis.com/customsearch/v1", {
@@ -34,7 +36,8 @@ app.post("/search", async (req, res) => {
         key: GOOGLE_API_KEY,
         cx: SEARCH_ENGINE_ID,
         q: query,
-        num: 10
+        num: 10,
+        start: startIndex
       }
     });
 
@@ -54,4 +57,3 @@ app.post("/search", async (req, res) => {
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on http://0.0.0.0:${PORT}`);
 });
-
